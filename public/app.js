@@ -1,5 +1,5 @@
 // MathBridge AI — front end. All state lives in memory and is gone when the tab closes.
-import { showEquation, diagnose, stepHint, workedExample, solutionSteps, similarItem } from './engine.js';
+import { showEquation, diagnose, stepHint, workedExample, solutionSteps, similarItem, isClean, solve, FORMS } from './engine.js';
 import { PRACTICE, PRE_QUIZ, POST_QUIZ } from './bank.js';
 
 const app = document.getElementById('app');
@@ -73,10 +73,154 @@ function home() {
           <li><span class="n">3</span><span><b>Final quiz</b> — 3 new questions to see how much you grew.</span></li>
         </ol>
         <div class="row"><button class="btn" id="go">Start the warm-up</button></div>
+        <p><button class="btn ghost small" id="custom" type="button">Build your own equation →</button></p>
         <p class="notice">No sign-up. Nothing you type is saved. Takes about 15 minutes.</p>
       </div>
     </section>`));
   app.querySelector('#go').addEventListener('click', () => quiz('pre', 0));
+  app.querySelector('#custom').addEventListener('click', () => customHome());
+}
+
+// ---------- build your own equation ----------
+function validateCustom(form, a, b) {
+  if (!Number.isInteger(a) || !Number.isInteger(b)) return 'Enter whole numbers for a and b.';
+  if (a === 0) return 'a can’t be 0.';
+  if (Math.abs(a) > 200 || Math.abs(b) > 1000) return 'Keep a between −200 and 200, and b between −1000 and 1000.';
+  const item = { form, a, b };
+  const c = solve(item);
+  if (!c || c.d !== 1) return 'These numbers don’t give a whole-number answer for x. Try different numbers.';
+  if (!isClean(item)) return 'Two different mistakes would land on the same wrong answer here, so a hint couldn’t tell them apart. Try different numbers.';
+  return null;
+}
+
+function customHome(prefill = {}, err = null) {
+  setProgress('');
+  const { form = 'add', a = '', b = '' } = prefill;
+  const card = el(`
+    <section class="card">
+      <p class="eyebrow">Build your own equation</p>
+      <h2>Pick a form and two whole numbers.</h2>
+      <p class="muted">Nothing here is saved — it's just for this session.</p>
+      <form id="custom-form" class="custom-form">
+        <div class="fields">
+          <div class="field">
+            <label for="cform">Form</label>
+            <select id="cform" name="form">
+              <option value="add">x + a = b</option>
+              <option value="sub">x − a = b</option>
+              <option value="mul">a · x = b</option>
+              <option value="div">x ÷ a = b</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="ca">a</label>
+            <input id="ca" name="a" type="number" step="1" inputmode="numeric" value="${esc(a)}" required>
+          </div>
+          <div class="field">
+            <label for="cb">b</label>
+            <input id="cb" name="b" type="number" step="1" inputmode="numeric" value="${esc(b)}" required>
+          </div>
+        </div>
+        <div class="equation" id="cpreview" aria-live="polite">x + a = b</div>
+        ${err ? `<div class="feedback hint"><div class="title">Try different numbers</div>${esc(err)}</div>` : ''}
+        <div class="row">
+          <button class="btn" type="submit">Practice this equation</button>
+          <button class="btn ghost" type="button" id="cback">← Back</button>
+        </div>
+      </form>
+    </section>`);
+  const formSel = card.querySelector('#cform'), aIn = card.querySelector('#ca'), bIn = card.querySelector('#cb'), preview = card.querySelector('#cpreview');
+  formSel.value = form;
+  const updatePreview = () => {
+    const av = parseInt(aIn.value, 10), bv = parseInt(bIn.value, 10);
+    preview.textContent = FORMS[formSel.value].show(Number.isInteger(av) ? av : 'a', Number.isInteger(bv) ? bv : 'b');
+  };
+  updatePreview();
+  formSel.addEventListener('change', updatePreview);
+  aIn.addEventListener('input', updatePreview);
+  bIn.addEventListener('input', updatePreview);
+  card.querySelector('#cback').addEventListener('click', home);
+  card.querySelector('#custom-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const f = formSel.value, av = parseInt(aIn.value, 10), bv = parseInt(bIn.value, 10);
+    const msg = validateCustom(f, av, bv);
+    if (msg) { customHome({ form: f, a: aIn.value, b: bIn.value }, msg); return; }
+    customPractice({ id: 'custom', form: f, a: av, b: bv });
+  });
+  mount(card);
+  aIn.focus();
+}
+
+function customPractice(item) {
+  setProgress('Your equation');
+  let wrong = 0;
+  const card = el(`
+    <section class="card">
+      <p class="eyebrow">Your equation</p>
+      <div class="equation" aria-label="Equation">${esc(showEquation(item))}</div>
+      <div id="box"></div>
+      <div class="feedback" id="fb" role="status" aria-live="polite"></div>
+    </section>`);
+  const fb = card.querySelector('#fb');
+  const box = answerBox(async (val, input) => {
+    const d = diagnose(item, val);
+    if (d.kind === 'unreadable') { fb.className = 'feedback hint'; fb.innerHTML = `<div class="title">Hmm</div>${esc(d.hint)}`; return; }
+
+    if (d.correct) {
+      input.disabled = true; card.querySelector('.answer-form button').disabled = true;
+      fb.className = 'feedback good';
+      fb.innerHTML = `<div class="title">✓ Correct! x = ${esc(val)}</div>
+        <p>${wrong === 0 ? 'Nice work — first try.' : 'You got there.'}</p>`;
+      const row = el(`<div class="row"></div>`);
+      const again = el(`<button class="btn" type="button">Try another custom equation</button>`);
+      again.addEventListener('click', () => customHome());
+      const back = el(`<button class="btn ghost" type="button">Done, back home</button>`);
+      back.addEventListener('click', home);
+      row.append(again, back);
+      fb.append(row);
+      again.focus();
+      return;
+    }
+
+    wrong++;
+    fb.className = 'feedback hint';
+    fb.innerHTML = `<div class="title">Not quite <span class="tag rules">Mistake guide</span></div>
+      <p class="hint-text">${esc(d.hint)}</p>
+      ${d.check ? `<p class="check">${esc(d.check)}</p>` : ''}`;
+
+    if (AI_ON && d.kind !== 'unreadable') {
+      const p = fb.querySelector('.hint-text');
+      p.classList.add('muted'); p.textContent = 'Thinking about your answer…';
+      try {
+        const r = await fetch('api/hint', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ form: item.form, a: item.a, b: item.b, answer: val }) });
+        const j = await r.json();
+        if (j.source === 'ai' && j.hint) {
+          p.textContent = j.hint;
+          fb.querySelector('.tag').className = 'tag ai';
+          fb.querySelector('.tag').textContent = 'AI-generated · may contain mistakes';
+        } else p.textContent = d.hint;
+      } catch { p.textContent = d.hint; }
+      p.classList.remove('muted');
+    }
+
+    if (wrong >= 2) fb.append(el(`<div class="extra"><b>Next step:</b> ${esc(stepHint(item))}</div>`));
+    if (wrong >= 3) {
+      const ex = workedExample(item);
+      fb.append(el(`<div class="extra"><b>Worked example (different numbers):</b><ol>${ex.steps.map((s) => `<li>${esc(s)}</li>`).join('')}</ol></div>`));
+    }
+    if (wrong >= 4) {
+      const show = el(`<div class="extra"><button class="btn ghost small" type="button">Show me the solution</button></div>`);
+      show.querySelector('button').addEventListener('click', () => {
+        show.innerHTML = `<b>Solution:</b><ol>${solutionSteps(item).map((s) => `<li>${esc(s)}</li>`).join('')}</ol>`;
+      });
+      fb.append(show);
+    }
+    input.select();
+  });
+  card.querySelector('#box').append(box.node);
+  mount(card);
+  box.input.focus();
 }
 
 function quiz(which, i) {

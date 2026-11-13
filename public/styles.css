@@ -133,6 +133,17 @@ main { flex: 1; width: 100%; max-width: 760px; margin: 0 auto; padding: 8px 16px
 
 .notice { font-size: .9rem; color: var(--muted); border-left: 4px solid var(--accent); padding: 4px 0 4px 12px; margin: 1em 0; }
 
+.custom-form { margin: 1em 0; }
+.custom-form .fields { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-end; margin-bottom: 1em; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label { font-weight: 700; font-size: .85rem; color: var(--muted); }
+.field select, .field input {
+  font: inherit; font-size: 1.1rem; padding: 10px 12px; border: 2px solid var(--line);
+  border-radius: 12px; background: var(--bg); color: var(--ink); min-height: 48px;
+}
+.field input { width: 8ch; }
+.field select:focus, .field input:focus { border-color: var(--brand); outline: none; }
+
 dialog { border: none; border-radius: var(--radius); padding: 24px; max-width: min(560px, calc(100vw - 32px)); background: var(--surface); color: var(--ink); }
 dialog::backdrop { background: rgb(0 0 0 / .45); }
 

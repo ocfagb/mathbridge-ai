@@ -84,6 +84,9 @@ npm test       # checks the equation bank, the mistake detection and the AI outp
 ## Edit the equation bank
 Teachers can edit `public/bank.js`. Each entry looks like `{ id: 'p13', form: 'mul', a: 4, b: 36 }`. The `form` is one of `add`, `sub`, `mul` or `div`. After editing, run `npm test`: it tells you if a problem's answer isn't a whole number or if two mistakes would give the same wrong answer.
 
+### Build your own equation (no editing required)
+From the home screen, **Build your own equation** lets anyone pick a form and type their own `a` and `b` right in the browser — no file editing, no redeploy. It runs the same check `npm test` uses (whole-number answer, every mistake distinguishable) and explains why if the numbers don't work. It's session-only: nothing is saved, and it isn't added to the quizzes or the results screen.
+
 ## Privacy
 - No accounts, names, emails, cookies, analytics or ads.
 - Answers stay in the browser tab's memory and are gone when the tab is closed.
