@@ -94,3 +94,7 @@ test('AI output filter blocks answers and made-up numbers', () => {
   assert.equal(safeAiHint('Try thinking about 42 and what that means here today?', item, '22'), null);
   assert.equal(safeAiHint('', item, '22'), null);
 });
+
+test('AI filter blocks the answer spelled out', () => {
+  assert.equal(safeAiHint('Great try! The number you want is eight, so try that now please?', { form: 'add', a: 7, b: 15 }, '22'), null);
+});

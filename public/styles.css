@@ -1,3 +1,6 @@
+:root { --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; }
+@font-face { font-family: "Atkinson Hyperlegible"; src: url(fonts/atkinson-hyperlegible-latin-400-normal.woff2) format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Atkinson Hyperlegible"; src: url(fonts/atkinson-hyperlegible-latin-700-normal.woff2) format("woff2"); font-weight: 700; font-display: swap; }
 :root {
   --bg: #f6f3ec;
   --surface: #ffffff;
@@ -39,7 +42,7 @@ body {
   background: var(--bg); color: var(--ink);
   font: 18px/1.5 "Atkinson Hyperlegible", system-ui, sans-serif;
 }
-h1, h2, h3 { font-family: Fraunces, Georgia, serif; line-height: 1.15; margin: 0 0 .5em; }
+h1, h2, h3 { font-family: var(--serif); line-height: 1.15; margin: 0 0 .5em; }
 h1 { font-size: clamp(2rem, 6vw, 3rem); font-weight: 800; }
 h2 { font-size: 1.6rem; }
 h3 { font-size: 1.15rem; }
@@ -85,12 +88,12 @@ main { flex: 1; width: 100%; max-width: 760px; margin: 0 auto; padding: 8px 16px
 .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 
 .equation {
-  font-family: Fraunces, Georgia, serif; font-weight: 600; text-align: center;
+  font-family: var(--serif); font-weight: 600; text-align: center;
   font-size: clamp(2.4rem, 11vw, 4rem); letter-spacing: .02em; margin: .2em 0 .4em;
   font-variant-numeric: tabular-nums; white-space: nowrap; overflow-x: auto;
 }
 .answer-form { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; align-items: center; }
-.answer-form label { font-family: Fraunces, Georgia, serif; font-size: 2rem; font-weight: 600; }
+.answer-form label { font-family: var(--serif); font-size: 2rem; font-weight: 600; }
 .answer-form input {
   width: 9ch; font: inherit; font-size: 1.8rem; text-align: center; padding: 8px 10px;
   border: 2px solid var(--line); border-radius: 12px; background: var(--bg); color: var(--ink);
@@ -120,7 +123,7 @@ main { flex: 1; width: 100%; max-width: 760px; margin: 0 auto; padding: 8px 16px
 
 .score-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 16px 0; }
 .stat { background: var(--bg); border-radius: 12px; padding: 14px; }
-.stat .v { font-family: Fraunces, Georgia, serif; font-size: 2rem; font-weight: 800; }
+.stat .v { font-family: var(--serif); font-size: 2rem; font-weight: 800; }
 .stat .l { color: var(--muted); font-size: .9rem; }
 .bars { display: grid; gap: 10px; margin: 8px 0 16px; }
 .bar { display: grid; grid-template-columns: 90px 1fr 48px; gap: 10px; align-items: center; }

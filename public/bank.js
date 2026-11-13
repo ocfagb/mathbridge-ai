@@ -17,15 +17,16 @@ export const PRACTICE = [
   { id: 'p12', form: 'div', a: -3, b: 5 },   // x = −15
 ];
 
+// Quizzes use whole, non-negative answers (grade 6 friendly; negatives start in grade 7).
 // Pre- and post-quiz use matching forms and difficulty so scores can be compared.
 export const PRE_QUIZ = [
-  { id: 'q1', form: 'add', a: 9, b: 17 },    // x = 8
+  { id: 'q1', form: 'sub', a: 5, b: 11 },    // x = 16
   { id: 'q2', form: 'mul', a: 5, b: 35 },    // x = 7
-  { id: 'q3', form: 'div', a: 3, b: -4 },    // x = −12
+  { id: 'q3', form: 'div', a: 3, b: 4 },     // x = 12
 ];
 
 export const POST_QUIZ = [
-  { id: 'r1', form: 'add', a: 6, b: 19 },    // x = 13
+  { id: 'r1', form: 'sub', a: 8, b: 9 },     // x = 17
   { id: 'r2', form: 'mul', a: 7, b: 42 },    // x = 6
-  { id: 'r3', form: 'div', a: 2, b: -7 },    // x = −14
+  { id: 'r3', form: 'div', a: 2, b: 7 },     // x = 14
 ];

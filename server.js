@@ -22,12 +22,12 @@ const DEBUG = process.env.DEBUG === '1'; // logs only status codes, never studen
 const TYPES = {
   '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8',
   '.css': 'text/css; charset=utf-8', '.svg': 'image/svg+xml', '.json': 'application/json',
-  '.ico': 'image/x-icon', '.png': 'image/png',
+  '.ico': 'image/x-icon', '.png': 'image/png', '.woff2': 'font/woff2', '.txt': 'text/plain; charset=utf-8',
 };
 const SECURITY_HEADERS = {
   'X-Content-Type-Options': 'nosniff',
   'Referrer-Policy': 'no-referrer',
-  'Content-Security-Policy': "default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:",
+  'Content-Security-Policy': "default-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:",
 };
 
 function send(res, status, body, type = 'application/json') {
@@ -38,7 +38,7 @@ function send(res, status, body, type = 'application/json') {
 // ---- Simple in-memory rate limit for the AI route (protects the API budget). Nothing is stored to disk.
 const hits = new Map();
 function tooMany(ip) {
-  const now = Date.now(), win = 60_000, max = 10;
+  const now = Date.now(), win = 60_000, max = 30; // per visitor per minute
   const arr = (hits.get(ip) || []).filter((t) => now - t < win);
   arr.push(now); hits.set(ip, arr);
   if (hits.size > 5000) hits.clear();
@@ -126,7 +126,7 @@ const server = http.createServer(async (req, res) => {
 
     if (url.pathname === '/api/hint' && req.method === 'POST') {
       if (!AI_ON) return send(res, 200, { source: 'rules' });
-      if (tooMany(req.socket.remoteAddress || '?')) return send(res, 200, { source: 'rules' });
+      if (tooMany(String(req.headers['x-forwarded-for'] || req.socket.remoteAddress || '?').split(',')[0].trim())) return send(res, 200, { source: 'rules' });
       const { form, a, b, answer } = await readJson(req);
       // Only numbers are accepted — no free text from students ever reaches the AI.
       if (!FORMS[form] || !intOk(a) || !intOk(b) || typeof answer !== 'string' || !/^[-−]?\d{1,4}([./]\d{1,4})?$/.test(answer.trim()))
