@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MathBridge AI</title>
+  <meta name="description" content="Practice one-step equations with hints that explain your exact mistake.">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fraunces:opsz,wght@9..144,600;9..144,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="./" aria-label="MathBridge AI home">
+      <svg viewBox="0 0 40 24" aria-hidden="true"><path d="M2 20 Q20 -4 38 20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M2 20h36M11 20v-7M20 20V8M29 20v-7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+      <span>MathBridge <b>AI</b></span>
+    </a>
+    <div class="progress" id="progress" aria-live="polite"></div>
+  </header>
+
+  <main id="app" tabindex="-1">
+    <noscript><p class="card">MathBridge needs JavaScript turned on.</p></noscript>
+  </main>
+
+  <footer class="foot">
+    <p>No sign-up. Nothing you type is saved. <a href="#" id="about-link">About &amp; privacy</a></p>
+  </footer>
+
+  <dialog id="about">
+    <h2>About MathBridge</h2>
+    <p>MathBridge helps grade 6–8 students practice one-step equations. When you make a mistake, it tries to figure out <em>which</em> mistake and gives a hint about that — without giving away the answer.</p>
+    <h3>Privacy</h3>
+    <ul>
+      <li>No accounts, names, emails, or cookies.</li>
+      <li>Your answers stay in this browser tab and disappear when you close it.</li>
+      <li>No ads and no tracking.</li>
+    </ul>
+    <h3>About the hints</h3>
+    <p>Answers are checked by the app's math engine, not by AI. Hints come from a mistake guide written and checked by our team. <span id="ai-note"></span></p>
+    <p class="muted">Built by team BridgeMinds (CodeSquad AI Community Sprint). Questions? Ask your teacher.</p>
+    <form method="dialog"><button class="btn">Close</button></form>
+  </dialog>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+# Replit configuration for MathBridge AI
+run = "npm start"
+modules = ["nodejs-20"]
+
+[gitHubImport]
+requiredFiles = [".replit", "package.json", "server.js"]
+
+[deployment]
+run = ["npm", "start"]
+deploymentTarget = "cloudrun"   # Autoscale
+
+[[ports]]
+localPort = 3000
+externalPort = 80
