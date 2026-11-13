@@ -12,7 +12,7 @@ import { diagnose, showEquation, FORMS } from './public/engine.js';
 import { safeAiHint } from './lib/safety.js';
 
 const ROOT = join(fileURLToPath(new URL('.', import.meta.url)), 'public');
-const PORT = Number(process.env.PORT) || 3000;
+const PORT = Number(process.env.PORT) || 5000;
 const API_KEY = process.env.GEMINI_API_KEY || '';
 const MODEL = process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite';
 // AI is OFF unless a teacher/team member explicitly turns it on. See README "About the AI".

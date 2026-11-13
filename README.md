@@ -54,7 +54,7 @@ Safeguards when AI is on (`AI_HINTS=on`):
 ### Option A: import from GitHub (recommended)
 1. Push this folder to a GitHub repo (see below).
 2. In Replit, go to **Create App → Import from GitHub**, or open `https://replit.com/github.com/<owner>/mathbridge-ai` in your browser.
-3. Click **Run**. The `.replit` file already sets `npm start` on port 3000.
+3. Click **Run**. The `.replit` file already sets `npm start` on port 5000.
 4. Click **Publish** (or **Deploy**) → **Autoscale**. The free Starter plan includes one published app, which goes offline after 30 days and can be republished.
 
 ### Option B: build it in a Replit tab
@@ -74,7 +74,7 @@ When you publish, make sure the published app has the same secrets too.
 Requires Node 20 or newer. The app has no dependencies, so there's no `npm install` step.
 
 ```bash
-npm start      # then open http://localhost:3000
+npm start      # then open http://localhost:5000
 ```
 
 ```bash
